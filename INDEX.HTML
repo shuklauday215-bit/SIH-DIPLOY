@@ -1,0 +1,4062 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jharkhand Tourism - Real Booking System</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <Style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap');
+
+:root {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary: #10b981;
+  --accent: #f59e0b;
+  --success: #059669;
+  --danger: #dc2626;
+  --warning: #d97706;
+  --dark: #1f2937;
+  --gray: #6b7280;
+  --light-gray: #f3f4f6;
+  --white: #ffffff;
+  --text: #374151;
+  --border: #e5e7eb;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
+  --transition: all 0.2s ease-in-out;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background-color: var(--white);
+  transition: var(--transition);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Navigation Styles */
+.navbar a, .nav-link, .sub-link {
+  text-decoration: none !important;
+  border: none !important;
+  border-bottom: none !important;
+}
+
+.navbar {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: var(--transition);
+  box-shadow: var(--shadow);
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.nav-main {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  align-items: center;
+}
+
+.nav-link {
+  color: var(--text);
+  font-weight: 500;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: var(--transition);
+}
+
+.nav-link:hover {
+  color: var(--primary);
+}
+
+.nav-link.active {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Dropdown Styles */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: var(--transition);
+  min-width: 180px;
+  z-index: 1001;
+}
+
+.dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-menu li {
+  list-style: none;
+}
+
+.sub-link {
+  display: block;
+  padding: 0.75rem 1rem;
+  color: var(--text);
+  transition: var(--transition);
+  border-bottom: 1px solid var(--border);
+}
+
+.sub-link:last-child {
+  border-bottom: none;
+}
+
+.sub-link:hover {
+  background: var(--light-gray);
+  color: var(--primary);
+}
+
+/* Navigation Actions */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+#theme-toggle {
+  background: none;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: var(--transition);
+}
+
+#theme-toggle:hover {
+  border-color: var(--primary);
+  background: var(--light-gray);
+}
+
+.profile-icon {
+  font-size: 1.5rem;
+  color: var(--primary);
+  transition: var(--transition);
+}
+
+.profile-icon:hover {
+  color: var(--primary-hover);
+}
+
+#login-btn, #signup-btn {
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+#login-btn {
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  background: transparent;
+}
+
+#login-btn:hover {
+  background: var(--primary);
+  color: var(--white);
+}
+
+#signup-btn {
+  background: var(--primary);
+  color: var(--white);
+  border: 1px solid var(--primary);
+}
+
+#signup-btn:hover {
+  background: var(--primary-hover);
+}
+
+/* Mobile Menu */
+.menu-trigger {
+  display: none;
+  flex-direction: column;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.menu-trigger span {
+  width: 24px;
+  height: 3px;
+  background: var(--text);
+  margin: 3px 0;
+  transition: var(--transition);
+  border-radius: 2px;
+}
+
+@media (max-width: 768px) {
+  .menu-trigger {
+    display: flex;
+  }
+  
+  .nav-main {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--white);
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-top: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: var(--transition);
+  }
+  
+  .nav-main.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  .nav-main li {
+    width: 100%;
+  }
+  
+  .nav-link {
+    padding: 1rem 2rem;
+    display: block;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .dropdown-menu {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    border: none;
+    background: var(--light-gray);
+  }
+}
+
+/* Page Sections */
+.page-section {
+  display: none;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease-in-out;
+}
+
+.page-section.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: var(--dark);
+}
+
+.intro-text {
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--gray);
+  max-width: 600px;
+  margin: 0 auto 3rem;
+}
+
+/* Hero Section */
+.hero-bg {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.8), rgba(16, 185, 129, 0.8)), 
+              url('https://via.placeholder.com/1920x600/4CAF50/fff?text=Jharkhand+Landscape') center/cover;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--white);
+  position: relative;
+}
+
+.hero-content h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  max-width: 600px;
+}
+
+.cta-btn {
+  background: var(--primary);
+  color: var(--white);
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow);
+}
+
+.cta-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.cta-btn.danger {
+  background: var(--danger);
+}
+
+.cta-btn.danger:hover {
+  background: #b91c1c;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* Features Grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.feature-card {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow);
+  text-align: center;
+  transition: var(--transition);
+  border: 1px solid var(--border);
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-xl);
+}
+
+.feature-card i {
+  font-size: 3rem;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--dark);
+}
+
+/* Gallery */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.gallery-item {
+  position: relative;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  transition: var(--transition);
+}
+
+.gallery-item:hover {
+  transform: scale(1.03);
+  box-shadow: var(--shadow-xl);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.gallery-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  color: var(--white);
+  padding: 2rem 1rem 1rem;
+}
+
+.gallery-overlay h4 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* Content Grid */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  margin: 3rem 0;
+}
+
+.content-text h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 1rem;
+}
+
+.content-text p {
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
+}
+
+.content-image img {
+  width: 100%;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Festival Grid */
+.festival-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.festival-card {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--secondary);
+  transition: var(--transition);
+}
+
+.festival-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.festival-card h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 1rem;
+}
+
+.festival-time {
+  display: inline-block;
+  background: var(--secondary);
+  color: var(--white);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--border-radius);
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-top: 1rem;
+}
+
+/* Sub Navigation */
+.sub-nav {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  padding: 1rem;
+  background: var(--light-gray);
+  border-radius: var(--border-radius-lg);
+}
+
+.sub-nav a {
+  padding: 0.5rem 1.5rem;
+  border-radius: var(--border-radius);
+  color: var(--gray);
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.sub-nav a.active,
+.sub-nav a:hover {
+  background: var(--primary);
+  color: var(--white);
+}
+
+/* Hotel Search & Booking */
+.hotel-search-form {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 2rem;
+}
+
+.search-filters {
+  display: grid;
+  gap: 1rem;
+}
+
+.hotel-results {
+  margin-top: 2rem;
+}
+
+.hotels-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.hotels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.hotel-card {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.hotel-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-xl);
+}
+
+.hotel-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.hotel-info-content {
+  padding: 1.5rem;
+}
+
+.hotel-info-content h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 0.5rem;
+}
+
+.rating {
+  color: var(--accent);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-top: 1rem;
+}
+
+/* Booking Form */
+.booking-details {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.booking-summary {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow);
+}
+
+.hotel-booking-info {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.hotel-booking-info img {
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: var(--border-radius);
+}
+
+.booking-form {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow);
+}
+
+.payment-summary {
+  background: var(--light-gray);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.cost-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cost-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.cost-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-top: 2px solid var(--border);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--dark);
+}
+
+/* Info Tabs */
+.info-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab-btn {
+  padding: 1rem 1.5rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--gray);
+  border-bottom: 2px solid transparent;
+  transition: var(--transition);
+}
+
+.tab-btn.active,
+.tab-btn:hover {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.info-content {
+  display: none;
+}
+
+.info-content.active {
+  display: block;
+}
+
+.amenities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.amenity-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--light-gray);
+  border-radius: var(--border-radius);
+}
+
+.amenity-item i {
+  color: var(--primary);
+}
+
+.policy-item {
+  margin-bottom: 2rem;
+}
+
+.policy-item h4 {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--dark);
+}
+
+/* Activities */
+.activities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.activity-card {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: var(--border-radius-lg);
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.activity-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-xl);
+}
+
+.activity-card i {
+  font-size: 3rem;
+  color: var(--secondary);
+  margin-bottom: 1rem;
+}
+
+.activity-card h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--dark);
+}
+
+/* Enhanced Chatbot */
+.chatbot-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.chatbot-header {
+  background: var(--primary);
+  color: var(--white);
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bot-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.bot-avatar {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.chatbot-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.status {
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.clear-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: var(--white);
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+.clear-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.chatbot-messages {
+  height: 400px;
+  overflow-y: auto;
+  padding: 1rem;
+  background: var(--light-gray);
+}
+
+.message {
+  margin-bottom: 1rem;
+}
+
+.bot-message .message-content {
+  background: var(--white);
+  padding: 1rem;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow);
+  max-width: 80%;
+  margin-left: 0;
+}
+
+.user-message .message-content {
+  background: var(--primary);
+  color: var(--white);
+  padding: 1rem;
+  border-radius: var(--border-radius-lg);
+  max-width: 80%;
+  margin-left: auto;
+  text-align: right;
+}
+
+.message-content ul {
+  margin: 0.5rem 0;
+  padding-left: 1rem;
+}
+
+.message-content li {
+  margin-bottom: 0.25rem;
+}
+
+.quick-questions {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--border);
+}
+
+.quick-btn {
+  background: var(--light-gray);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+.quick-btn:hover {
+  background: var(--primary);
+  color: var(--white);
+}
+
+.input-area {
+  display: flex;
+  padding: 1rem;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+}
+
+.input-area input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 25px;
+  margin-right: 0.5rem;
+  font-size: 1rem;
+}
+
+.input-area button {
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.input-area button:hover {
+  background: var(--primary-hover);
+}
+
+/* Profile Section */
+.profile-container {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 3rem;
+  margin: 2rem 0;
+}
+
+.profile-sidebar {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow);
+  text-align: center;
+  height: fit-content;
+}
+
+.profile-avatar {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.profile-avatar img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--border);
+}
+
+.edit-avatar {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.profile-stats {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--gray);
+}
+
+.profile-main {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.profile-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+
+.profile-tab {
+  flex: 1;
+  padding: 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--gray);
+  transition: var(--transition);
+}
+
+.profile-tab.active,
+.profile-tab:hover {
+  background: var(--light-gray);
+  color: var(--primary);
+}
+
+.profile-content {
+  display: none;
+  padding: 2rem;
+}
+
+.profile-content.active {
+  display: block;
+}
+
+.profile-section {
+  margin-bottom: 2rem;
+}
+
+.profile-section h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--dark);
+}
+
+/* Bookings List */
+.bookings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.booking-item {
+  background: var(--light-gray);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  border-left: 4px solid var(--primary);
+}
+
+.booking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.booking-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--border-radius);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.booking-status.confirmed {
+  background: var(--success);
+  color: var(--white);
+}
+
+.booking-status.pending {
+  background: var(--warning);
+  color: var(--white);
+}
+
+.no-bookings,
+.no-payments,
+.no-downloads {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--gray);
+}
+
+.no-bookings i,
+.no-payments i,
+.no-downloads i {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* Downloads */
+.download-stats-small {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.stat-item-small {
+  text-align: center;
+}
+
+.download-filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  background: var(--light-gray);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.filter-btn.active,
+.filter-btn:hover {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+.downloads-list {
+  min-height: 200px;
+}
+
+.download-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  margin-bottom: 1rem;
+  transition: var(--transition);
+}
+
+.download-item:hover {
+  box-shadow: var(--shadow);
+  border-color: var(--primary);
+}
+
+.download-info h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: var(--dark);
+}
+
+.download-info p {
+  color: var(--gray);
+  font-size: 0.9rem;
+}
+
+.download-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.download-btn,
+.view-btn,
+.delete-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition);
+  font-size: 0.9rem;
+}
+
+.download-btn {
+  background: var(--primary);
+  color: var(--white);
+}
+
+.download-btn:hover {
+  background: var(--primary-hover);
+}
+
+.view-btn {
+  background: var(--accent);
+  color: var(--white);
+}
+
+.delete-btn {
+  background: var(--danger);
+  color: var(--white);
+}
+
+.delete-btn:hover {
+  background: #b91c1c;
+}
+
+/* Payment History */
+.payment-history {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.payment-item {
+  background: var(--light-gray);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  border-left: 4px solid var(--success);
+}
+
+.payment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.payment-amount {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--success);
+}
+
+.payment-date {
+  color: var(--gray);
+  font-size: 0.9rem;
+}
+
+/* Modal Styles */
+.modal-page {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: 2rem;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  z-index: 2001;
+  box-shadow: var(--shadow-xl);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+.payment-modal {
+  max-width: 500px;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--gray);
+  transition: var(--transition);
+}
+
+.modal-close:hover {
+  color: var(--dark);
+}
+
+.modal-content h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--dark);
+}
+
+.modal-footer {
+  text-align: center;
+  margin-top: 1rem;
+  color: var(--gray);
+}
+
+.modal-footer a {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.modal-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Form Styles */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--dark);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-group small {
+  color: var(--gray);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.checkbox-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+}
+
+.forgot-password {
+  color: var(--primary);
+  font-size: 0.9rem;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+/* Payment Modal */
+.payment-summary-modal {
+  background: var(--light-gray);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.payment-hotel-info h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: var(--dark);
+}
+
+.payment-amount {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.payment-methods h3 {
+  margin-bottom: 1rem;
+  color: var(--dark);
+}
+
+.payment-options {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.payment-option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 2px solid var(--border);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.payment-option.active,
+.payment-option:hover {
+  border-color: var(--primary);
+  background: rgba(37, 99, 235, 0.1);
+}
+
+.payment-option i {
+  font-size: 1.5rem;
+  color: var(--primary);
+}
+
+.payment-form {
+  display: none;
+}
+
+.payment-form.active {
+  display: block;
+}
+
+/* Dark Mode */
+body.dark-mode {
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+body.dark-mode:root {
+  --white: #1e293b;
+  --text: #e2e8f0;
+  --gray: #94a3b8;
+  --light-gray: #334155;
+  --border: #475569;
+  --dark: #f1f5f9;
+}
+
+body.dark-mode .navbar {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: #475569;
+}
+
+body.dark-mode .hero-bg {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.8)), 
+              url('https://via.placeholder.com/1920x600/1e293b/fff?text=Jharkhand+Night') center/cover;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 1rem;
+  }
+  
+  .section-content {
+    padding: 1rem;
+  }
+  
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .content-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .profile-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .booking-details {
+    grid-template-columns: 1fr;
+  }
+  
+  .payment-options {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+  
+  .hero-content p {
+    font-size: 1rem;
+  }
+  
+  .modal-content {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+}
+
+/* Animations */
+.page-section {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading States */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--primary);
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Success/Error Messages */
+.message-success,
+.message-error {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 1rem 1.5rem;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  z-index: 10000;
+  animation: slideInRight 0.3s ease-out;
+}
+
+.message-success {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.message-error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 1rem; }
+.hidden { display: none; }
+.visible { display: block; }
+#user-menu { position: relative; display:inline-block; }
+#user-menu-btn img { border-radius: 50%; }
+#user-menu-dropdown { min-width:180px; background:#fff; border-radius:8px; box-shadow:0 8px 30px rgba(60, 72, 100, 0.13); }
+#user-menu-dropdown a,
+#user-menu-dropdown button { font: inherit; background: none; border: none; text-align: left; width: 100%; cursor: pointer; font-size: 1rem;}
+#user-menu-dropdown a:hover { background:#f6f7f8; }
+#user-menu-dropdown button:hover { background: #ffeaea; }
+
+  </Style>
+</head>
+
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">Jharkhand Tourism</div>
+      <ul class="nav-main" id="nav-main">
+        <li><a href="#home" class="nav-link active">Home</a></li>
+        <li class="dropdown">
+          <a href="#about" class="nav-link">About</a>
+          <ul class="dropdown-menu">
+            <li><a href="#about-culture" class="sub-link">Culture</a></li>
+            <li><a href="#about-fashion" class="sub-link">Fashion</a></li>
+            <li><a href="#about-festival" class="sub-link">Festival</a></li>
+            <li><a href="#about-dance" class="sub-link">Dance</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#hotels" class="nav-link">Hotels</a>
+          <ul class="dropdown-menu">
+            <li><a href="#hotel-search" class="sub-link">Search Hotels</a></li>
+            <li><a href="#hotel-booking" class="sub-link">Book Now</a></li>
+            <li><a href="#hotel-info" class="sub-link">Information</a></li>
+          </ul>
+        </li>
+        <li><a href="#activity" class="nav-link">Activities</a></li>
+        <li><a href="#ai-chat" class="nav-link">AI Assistant</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="theme-toggle" aria-label="Switch Theme">🌙</button>
+        <a href="#profile" class="profile-icon" id="profile-btn" style="display: none;"><i
+            class="fas fa-user-circle"></i></a>
+        <a href="#login" class="nav-link" id="login-btn">Sign In</a>
+        <a href="#signup" class="nav-link" id="signup-btn">Sign Up</a>
+        <button class="menu-trigger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Home Section -->
+    <section id="home" class="page-section active">
+      <div class="hero-bg">
+        <div class="hero-content">
+          <h1>Explore the Unexplored Jharkhand</h1>
+          <p>Discover the hidden gems of Jharkhand, a land of natural beauty, rich culture, and spiritual significance.
+            Plan your adventure today!</p>
+          <button class="cta-btn" onclick="location.hash='#hotels'">Book Hotels Now</button>
+        </div>
+      </div>
+      <div class="section-content">
+        <h2 class="section-title">Discover Natural Beauty</h2>
+        <p class="intro-text">Jharkhand, the land of forests, offers pristine waterfalls, tribal culture, and
+          breathtaking landscapes that remain largely unexplored.</p>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <i class="fas fa-mountain"></i>
+            <h3>Stunning Landscapes</h3>
+            <p>From rolling hills to dense forests, experience nature at its finest</p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-users"></i>
+            <h3>Rich Culture</h3>
+            <p>Immerse yourself in traditional festivals, dances, and local customs</p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-hotel"></i>
+            <h3>Premium Hotels</h3>
+            <p>Book verified hotels with real-time availability and instant confirmation</p>
+          </div>
+        </div>
+
+        <h2 class="section-title">Must-Visit Places</h2>
+        <div class="gallery">
+          <div class="gallery-item">
+            <img
+              src="https://media.istockphoto.com/id/1323460129/photo/patratu-valley-ranchi-beautiful-place-in-jharkhand.jpg?s=2048x2048&w=is&k=20&c=rqOxCmykVS6i8a6r-e-yME8qeLWSsjM3-Lr5mHWBffY="
+              alt="Netarhat Hill Station" />
+            <div class="gallery-overlay">
+              <h4>Netarhat</h4>
+              <p>Queen of Chotanagpur</p>
+            </div>
+          </div>
+          <div class="gallery-item">
+            <img src="https://via.placeholder.com/300x200/2196F3/fff?text=Hundru+Falls" alt="Hundru Falls" />
+            <div class="gallery-overlay">
+              <h4>Hundru Falls</h4>
+              <p>Majestic Waterfall</p>
+            </div>
+          </div>
+          <div class="gallery-item">
+            <img
+              src="https://imgs.search.brave.com/m5StQ5okYCsiZG2piKjN_RlbjGkcX78aft8RUi7bUQk/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9zdGF0/aWMyLnRyaXBvdG8u/Y29tL21lZGlhL2Zp/bHRlci90c3QvaW1n/LzM3MjU1Ni9Ucmlw/RG9jdW1lbnQvMTUw/NTA3MzYwN19pbWdf/OTY5Ny5qcGcud2Vi/cA"
+              alt="Betla National Park" />
+            <div class="gallery-overlay">
+              <h4>Betla National Park</h4>
+              <p>Wildlife Sanctuary</p>
+            </div>
+          </div>
+          <div class="gallery-item">
+            <img
+              src="https://cdn.s3waas.gov.in/s3559cb990c9dffd8675f6bc2186971dc2/uploads/bfi_thumb/2018031362-olw8xfghr3e3zcpi6tmja8oa4waoj5q89hvr5nuggw.jpg"
+              alt="Deoghar Temple" />
+            <div class="gallery-overlay">
+              <h4>Deoghar</h4>
+              <p>Spiritual Haven</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Sections (keeping existing structure) -->
+    <section id="about-culture" class="page-section">
+      <div class="section-content">
+        <h2>Culture of Jharkhand</h2>
+        <div class="content-grid">
+          <div class="content-text">
+            <h3>Music and Dance</h3>
+            <p>Jharkhand's music and dance are integral parts of its cultural identity. Traditional music often features
+              instruments like the mandolin, flute, and drums, accompanying lively dances that depict various aspects of
+              life, from celebrations to rituals. The Chhau dance, a UNESCO-recognized art form, is a highlight, known
+              for its elaborate masks and dynamic movements.</p>
+
+            <h3>Art and Crafts</h3>
+            <p>The artistic skills of Jharkhand's people are evident in their diverse crafts. From intricate bamboo work
+              and pottery to vibrant paintings and metalwork, each piece reflects the region's cultural motifs and
+              stories. These crafts are not only aesthetically pleasing but also serve as a means of preserving cultural
+              heritage.</p>
+          </div>
+          <div class="content-image">
+            <img
+              src="https://images.unsplash.com/photo-1603909477416-3fc943f3e4d8?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8amhhcmtoYW5kJTIwdHJlZGl0aW9uYWwlMjBkYW5jZSUyMHBpY3R1cmV8ZW58MHx8MHx8fDA%3D"
+              alt="Traditional Dance" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about-fashion" class="page-section">
+      <div class="section-content">
+        <h2>Traditional Fashion</h2>
+        <div class="content-grid">
+          <div class="content-image">
+            <img
+              src="https://imgs.search.brave.com/Yka2-2uIkn9oVtKhUV4ZKheiW8tfaFu5rrmrBsE5124/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/d29ybGRibGF6ZS5p/bi93cC1jb250ZW50/L3VwbG9hZHMvMjAy/My8wMS9UcmFkaXRp/b25hbC1EcmVzcy1v/Zi1KaGFya2hhbmQu/d2VicA"
+              alt="Traditional Attire" />
+          </div>
+          <div class="content-text">
+            <p>Traditional Jharkhand attire reflects the rich cultural heritage of tribal communities. Women often wear
+              colorful sarees with intricate borders, complemented by traditional jewelry made of silver and beads. Men
+              typically don dhotis with kurtas during festivals and special occasions.</p>
+            <p>The state's textile tradition includes beautiful handwoven fabrics with geometric patterns that tell
+              stories of ancient traditions and beliefs passed down through generations.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about-festival" class="page-section">
+      <div class="section-content">
+        <h2>Festivals of Jharkhand</h2>
+        <div class="festival-grid">
+          <div class="festival-card">
+            <h3>Sarhul Festival</h3>
+            <p>The spring festival celebrating the worship of trees and nature, marking the beginning of the new year
+              for tribal communities.</p>
+            <span class="festival-time">March - April</span>
+          </div>
+          <div class="festival-card">
+            <h3>Karma Puja</h3>
+            <p>Dedicated to Karma tree worship, this festival emphasizes the connection between humans and nature.</p>
+            <span class="festival-time">August - September</span>
+          </div>
+          <div class="festival-card">
+            <h3>Sohrai Festival</h3>
+            <p>Harvest festival celebrated with vibrant decorations, folk songs, and community feasts.</p>
+            <span class="festival-time">October - November</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about-dance" class="page-section">
+      <div class="section-content">
+        <h2>Traditional Dances</h2>
+        <div class="dance-showcase">
+          <div class="dance-item">
+            <h3>Chhau Dance</h3>
+            <p>UNESCO World Heritage masked dance form combining martial arts, acrobatics, and storytelling.</p>
+          </div>
+          <div class="dance-item">
+            <h3>Paika Dance</h3>
+            <p>Martial dance performed with swords and shields, showcasing warrior traditions.</p>
+          </div>
+          <div class="dance-item">
+            <h3>Santhal Dance</h3>
+            <p>Tribal folk dance performed during festivals with traditional music and instruments.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hotel Search Section -->
+    <section id="hotel-search" class="page-section">
+      <div class="section-content">
+        <h2>Search Hotels in Jharkhand</h2>
+        <div class="hotel-search-form">
+          <div class="search-filters">
+            <div class="form-group">
+              <label>Destination</label>
+              <select id="hotelDestination">
+                <option value="">Select Destination</option>
+                <option value="ranchi">Ranchi</option>
+                <option value="jamshedpur">Jamshedpur</option>
+                <option value="deoghar">Deoghar</option>
+                <option value="netarhat">Netarhat</option>
+                <option value="dhanbad">Dhanbad</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Check-in</label>
+                <input type="date" id="searchCheckin" min="">
+              </div>
+              <div class="form-group">
+                <label>Check-out</label>
+                <input type="date" id="searchCheckout" min="">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Rooms</label>
+                <select id="searchRooms">
+                  <option value="1">1 Room</option>
+                  <option value="2">2 Rooms</option>
+                  <option value="3">3 Rooms</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Guests</label>
+                <select id="searchGuests">
+                  <option value="1">1 Guest</option>
+                  <option value="2">2 Guests</option>
+                  <option value="3">3 Guests</option>
+                  <option value="4">4 Guests</option>
+                </select>
+              </div>
+            </div>
+            <button class="cta-btn" onclick="searchHotels()">Search Hotels</button>
+          </div>
+        </div>
+
+        <div id="hotelResults" class="hotel-results" style="display:none;">
+          <h3>Available Hotels</h3>
+          <div id="hotelsList" class="hotels-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hotel Booking Section -->
+    <section id="hotel-booking" class="page-section">
+      <div class="section-content">
+        <h2>Hotel Booking Details</h2>
+        <div id="bookingDetails" class="booking-details" style="display:none;">
+          <div class="booking-summary">
+            <div class="hotel-booking-info">
+              <img id="selectedHotelImage" src="" alt="Selected Hotel">
+              <div class="hotel-details">
+                <h3 id="selectedHotelName"></h3>
+                <div id="selectedHotelRating" class="rating"></div>
+                <p id="selectedHotelLocation"></p>
+                <div id="selectedHotelPrice" class="price"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="booking-form">
+            <h3>Guest Information</h3>
+            <form id="guestForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>First Name *</label>
+                  <input type="text" id="guestFirstName" required>
+                </div>
+                <div class="form-group">
+                  <label>Last Name *</label>
+                  <input type="text" id="guestLastName" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Email *</label>
+                  <input type="email" id="guestEmail" required>
+                </div>
+                <div class="form-group">
+                  <label>Phone *</label>
+                  <input type="tel" id="guestPhone" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Special Requests</label>
+                <textarea id="specialRequests" rows="3" placeholder="Any special requirements..."></textarea>
+              </div>
+            </form>
+
+            <div class="payment-summary">
+              <h3>Payment Summary</h3>
+              <div class="cost-breakdown">
+                <div class="cost-item">
+                  <span>Room Rate (per night)</span>
+                  <span id="roomRate">₹0</span>
+                </div>
+                <div class="cost-item">
+                  <span id="nightsText">1 Night</span>
+                  <span id="totalRoomCost">₹0</span>
+                </div>
+                <div class="cost-item">
+                  <span>Taxes & Fees</span>
+                  <span id="taxesAmount">₹0</span>
+                </div>
+                <div class="cost-total">
+                  <span>Total Amount</span>
+                  <span id="finalAmount">₹0</span>
+                </div>
+              </div>
+              <button class="cta-btn full-width" onclick="proceedToPayment()">Pay Now</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="popular-hotels">
+          <h3>Popular Hotels in Jharkhand</h3>
+          <div class="hotels-grid" id="popularHotels">
+            <!-- Popular hotels will be loaded here -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hotel Information Section -->
+    <section id="hotel-info" class="page-section">
+      <div class="section-content">
+        <h2>Hotel Information & Amenities</h2>
+        <div class="info-tabs">
+          <button class="tab-btn active" onclick="showInfoTab('amenities')">Amenities</button>
+          <button class="tab-btn" onclick="showInfoTab('policies')">Policies</button>
+          <button class="tab-btn" onclick="showInfoTab('location')">Location</button>
+        </div>
+
+        <div id="amenities" class="info-content active">
+          <h3>Hotel Amenities</h3>
+          <div class="amenities-grid">
+            <div class="amenity-item"><i class="fas fa-wifi"></i> Free Wi-Fi</div>
+            <div class="amenity-item"><i class="fas fa-swimming-pool"></i> Swimming Pool</div>
+            <div class="amenity-item"><i class="fas fa-dumbbell"></i> Fitness Center</div>
+            <div class="amenity-item"><i class="fas fa-utensils"></i> Restaurant</div>
+            <div class="amenity-item"><i class="fas fa-car"></i> Free Parking</div>
+            <div class="amenity-item"><i class="fas fa-concierge-bell"></i> Room Service</div>
+          </div>
+        </div>
+
+        <div id="policies" class="info-content">
+          <h3>Hotel Policies</h3>
+          <div class="policy-item">
+            <h4>Check-in / Check-out</h4>
+            <p>Check-in: 2:00 PM | Check-out: 12:00 PM</p>
+          </div>
+          <div class="policy-item">
+            <h4>Cancellation Policy</h4>
+            <p>Free cancellation up to 24 hours before check-in. After that, one night charge applies.</p>
+          </div>
+          <div class="policy-item">
+            <h4>Payment Policy</h4>
+            <p>We accept all major credit cards, debit cards, and UPI payments.</p>
+          </div>
+        </div>
+
+        <div id="location" class="info-content">
+          <h3>Location & Nearby Attractions</h3>
+          <div class="location-info">
+            <h4>Nearby Attractions</h4>
+            <ul>
+              <li>Ranchi Airport - 15 km</li>
+              <li>Birsa Munda Airport - 12 km</li>
+              <li>Jagannath Temple - 8 km</li>
+              <li>Rock Garden - 10 km</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Activities Section (keeping existing) -->
+    <section id="activity" class="page-section">
+      <div class="sub-nav">
+        <a href="#activity-adventure" class="active">Adventure</a>
+        <a href="#activity-nature">Nature</a>
+        <a href="#activity-culture">Cultural</a>
+      </div>
+      <div class="section-content">
+        <h2>Adventure Activities</h2>
+        <div class="activities-grid">
+          <div class="activity-card">
+            <i class="fas fa-hiking"></i>
+            <h3>Trekking</h3>
+            <p>Explore scenic trails through Netarhat hills and dense forests</p>
+          </div>
+          <div class="activity-card">
+            <i class="fas fa-swimmer"></i>
+            <h3>Water Sports</h3>
+            <p>Kayaking and boating at Dimna Lake and other water bodies</p>
+          </div>
+          <div class="activity-card">
+            <i class="fas fa-parachute-box"></i>
+            <h3>Paragliding</h3>
+            <p>Soar above beautiful landscapes and experience aerial views</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Enhanced AI Chatbot Section -->
+    <section id="ai-chat" class="page-section">
+      <div class="section-content">
+        <h2>Jharkhand Tourism AI Assistant</h2>
+        <div class="chatbot-container">
+          <div class="chatbot-header">
+            <div class="bot-info">
+              <div class="bot-avatar">🤖</div>
+              <div>
+                <h3>Tourism Assistant</h3>
+                <span class="status online">Online - Trained on Jharkhand Tourism</span>
+              </div>
+            </div>
+            <button id="clearChat" class="clear-btn">Clear Chat</button>
+          </div>
+          <div class="chatbot-messages" id="chatMessages">
+            <div class="message bot-message">
+              <div class="message-content">
+                <p>Hello! I'm your Jharkhand Tourism AI Assistant. I'm specially trained to help you with:</p>
+                <ul>
+                  <li>🏨 Hotel recommendations and bookings</li>
+                  <li>🗺️ Tourist attractions and itineraries</li>
+                  <li>🎭 Cultural events and festivals</li>
+                  <li>🚗 Transportation and travel tips</li>
+                  <li>🍽️ Local cuisine and dining</li>
+                </ul>
+                <p>What would you like to know about Jharkhand?</p>
+              </div>
+            </div>
+          </div>
+          <div class="chatbot-input">
+            <div class="quick-questions">
+              <button class="quick-btn" onclick="askQuickQuestion('Best hotels in Ranchi')">Best hotels in
+                Ranchi</button>
+              <button class="quick-btn" onclick="askQuickQuestion('Top attractions in Jharkhand')">Top
+                attractions</button>
+              <button class="quick-btn" onclick="askQuickQuestion('Weather in Jharkhand')">Weather info</button>
+            </div>
+            <div class="input-area">
+              <input type="text" id="chatInput" placeholder="Ask me anything about Jharkhand tourism...">
+              <button id="sendMessage"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Enhanced Profile Section -->
+    <section id="profile" class="page-section">
+      <div class="section-content">
+        <h2>My Profile</h2>
+        <div class="profile-container">
+          <div class="profile-sidebar">
+            <div class="profile-avatar">
+              <img src="https://via.placeholder.com/150x150/3F51B5/fff?text=User" alt="Profile Picture"
+                id="profileImage">
+              <button class="edit-avatar" id="editAvatar"><i class="fas fa-camera"></i></button>
+              
+              <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+              <button class="cta-btn danger" onclick="logout()" style="width:100%;margin-top:2rem"><i class="fas fa-sign-out-alt"></i> Logout</button>
+
+            </div>
+            <h3 id="profileName">John Doe</h3>
+            <p id="profileEmail">john.doe@example.com</p>
+            <div class="profile-stats">
+              <div class="stat">
+                <span class="stat-number" id="totalBookings">0</span>
+                <span class="stat-label">Bookings</span>
+              </div>
+              <div class="stat">
+                <span class="stat-number" id="totalTrips">0</span>
+                <span class="stat-label">Trips</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-main">
+            <div class="profile-tabs">
+              <button class="profile-tab active" onclick="showProfileTab('personal')">Personal Info</button>
+              <button class="profile-tab" onclick="showProfileTab('bookings')">My Bookings</button>
+              <button class="profile-tab" onclick="showProfileTab('downloads')">Downloads</button>
+              <button class="profile-tab" onclick="showProfileTab('payments')">Payment History</button>
+            </div>
+
+            <!-- Personal Information Tab -->
+            <div id="personal" class="profile-content active">
+              <div class="profile-section">
+                <h3>Personal Information</h3>
+                <form id="profileForm">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>First Name</label>
+                      <input type="text" id="firstName" value="John">
+                    </div>
+                    <div class="form-group">
+                      <label>Last Name</label>
+                      <input type="text" id="lastName" value="Doe">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Email</label>
+                      <input type="email" id="email" value="john.doe@example.com">
+                    </div>
+                    <div class="form-group">
+                      <label>Phone</label>
+                      <input type="tel" id="phone" value="+91 98765 43210">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Address</label>
+                    <textarea id="address" rows="3">123 Main Street, Ranchi, Jharkhand</textarea>
+                  </div>
+                  <button type="submit" class="cta-btn">Update Profile</button>
+                </form>
+              </div>
+            </div>
+
+            <!-- My Bookings Tab -->
+            <div id="bookings" class="profile-content">
+              <div class="profile-section">
+                <h3>My Hotel Bookings</h3>
+                <div id="userBookings" class="bookings-list">
+                  <div class="no-bookings">
+                    <i class="fas fa-calendar-alt"></i>
+                    <p>No bookings found. Start booking hotels to see them here!</p>
+                    <button class="cta-btn" onclick="location.hash='#hotels'">Book Hotels</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Downloads Tab -->
+            <div id="downloads" class="profile-content">
+              <div class="profile-section">
+                <h3>My Downloads</h3>
+                <div class="download-stats-small">
+                  <div class="stat-item-small">
+                    <span class="stat-number" id="totalDownloads">0</span>
+                    <span class="stat-label">Total Items</span>
+                  </div>
+                  <div class="stat-item-small">
+                    <span class="stat-number" id="totalSize">0</span>
+                    <span class="stat-label">KB Stored</span>
+                  </div>
+                </div>
+
+                <div class="download-filters">
+                  <button class="filter-btn active" data-filter="all">All</button>
+                  <button class="filter-btn" data-filter="bookings">Bookings</button>
+                  <button class="filter-btn" data-filter="receipts">Receipts</button>
+                  <button class="filter-btn" data-filter="itineraries">Itineraries</button>
+                </div>
+
+                <div id="downloadsList" class="downloads-list">
+                  <div id="noDownloads" class="no-downloads">
+                    <i class="fas fa-download"></i>
+                    <p>No downloads yet. Your booking receipts and travel documents will appear here.</p>
+                  </div>
+                </div>
+
+                <div class="download-actions">
+                  <button class="cta-btn" id="exportAll" onclick="exportAllData()" style="display:none;">Export All
+                    Data</button>
+                  <button class="cta-btn danger" onclick="clearAllDownloads()" id="clearAllBtn"
+                    style="display:none;">Clear All</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment History Tab -->
+            <div id="payments" class="profile-content">
+              <div class="profile-section">
+                <h3>Payment History</h3>
+                <div id="paymentHistory" class="payment-history">
+                  <div class="no-payments">
+                    <i class="fas fa-credit-card"></i>
+                    <p>No payment history found. Your completed transactions will appear here.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Login Modal -->
+    <section id="login" class="modal-page">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <button class="modal-close" id="close-login">
+          <i class="fas fa-times"></i>
+        </button>
+        <h2>Welcome Back</h2>
+        <form id="loginForm">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="loginEmail" placeholder="Enter your email" required>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="Enter your password" required>
+          </div>
+          <div class="form-options">
+            <label class="checkbox-item">
+              <input type="checkbox" id="rememberMe">
+              <span>Remember me</span>
+            </label>
+            <a href="#" class="forgot-password">Forgot Password?</a>
+          </div>
+          <button type="submit" class="cta-btn full-width">Sign In</button>
+        </form>
+        <p class="modal-footer">Don't have an account? <a href="#signup" id="to-signup">Sign Up</a></p>
+      </div>
+    </section>
+
+    <!-- Signup Modal -->
+    <section id="signup" class="modal-page">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <button class="modal-close" id="close-signup">
+          <i class="fas fa-times"></i>
+        </button>
+        <h2>Create Your Account</h2>
+        <form id="signupForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name</label>
+              <input type="text" id="signupFirstName" placeholder="First Name" required>
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input type="text" id="signupLastName" placeholder="Last Name" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="signupEmail" placeholder="Enter your email" required>
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="signupPhone" placeholder="Enter your phone number" required>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="signupPassword" placeholder="Create a password" required minlength="6">
+          </div>
+          <div class="form-group">
+            <label>Confirm Password</label>
+            <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+          </div>
+          <div class="form-options">
+            <label class="checkbox-item">
+              <input type="checkbox" id="agreeTerms" required>
+              <span>I agree to the Terms & Conditions</span>
+            </label>
+          </div>
+          <button type="submit" class="cta-btn full-width">Create Account</button>
+        </form>
+        <p class="modal-footer">Already have an account? <a href="#login" id="to-login">Sign In</a></p>
+      </div>
+      <div class="nav-actions">
+  <!-- ...existing nav buttons... -->
+  <a href="#profile" class="profile-icon" id="profile-btn" style="display: none;"><i class="fas fa-user-circle"></i></a>
+  <a href="#login" class="nav-link" id="login-btn">Sign In</a>
+  <a href="#signup" class="nav-link" id="signup-btn">Sign Up</a>
+  <!-- USER DROPDOWN START -->
+  <div id="user-menu" style="display: none; position: relative;">
+    <button id="user-menu-btn" style="background:none;border:none;cursor:pointer;padding:0;">
+      <img id="user-menu-avatar" src="https://via.placeholder.com/32x32/3F51B5/fff?text=U" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;" alt="User">
+      <i class="fas fa-chevron-down"></i>
+    </button>
+    <div id="user-menu-dropdown" style="display:none; position:absolute; right:0; min-width:180px; background:#fff; border-radius:8px; box-shadow:0 6px 24px rgba(19,59,92,0.11); margin-top:10px; z-index:2000;">
+      <div style="padding:1rem 1.25rem; border-bottom:1px solid #eee;">
+        <div id="user-menu-name" style="font-weight:700; font-size:1rem;">User</div>
+        <div id="user-menu-email" style="font-size:.90rem; color:#888;">user@example.com</div>
+      </div>
+      <a href="#profile" style="display:block;padding:.7rem 1.25rem;text-decoration:none;color:#333;">My Profile</a>
+      <button onclick="logout()" style="width:100%;padding:.8rem 1.25rem;text-align:left;background:none;border:none;cursor:pointer;color:#dc2626;font-weight:600;">Logout</button>
+    </div>
+  </div>
+  <!-- USER DROPDOWN END -->
+  <button class="menu-trigger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</div>
+
+    </section>
+
+    <!-- Payment Modal -->
+    <section id="paymentModal" class="modal-page">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content payment-modal">
+        <button class="modal-close" onclick="closePaymentModal()">
+          <i class="fas fa-times"></i>
+        </button>
+        <h2>Complete Payment</h2>
+        <div class="payment-summary-modal">
+          <div class="payment-hotel-info">
+            <h3 id="paymentHotelName"></h3>
+            <p id="paymentHotelDates"></p>
+            <p id="paymentGuestInfo"></p>
+          </div>
+          <div class="payment-amount">
+            <span>Total Amount: </span>
+            <span id="paymentTotalAmount" class="amount">₹0</span>
+          </div>
+        </div>
+
+        <div class="payment-methods">
+          <h3>Choose Payment Method</h3>
+          <div class="payment-options">
+            <div class="payment-option active" data-method="card">
+              <i class="fas fa-credit-card"></i>
+              <span>Credit/Debit Card</span>
+            </div>
+            <div class="payment-option" data-method="upi">
+              <i class="fas fa-mobile-alt"></i>
+              <span>UPI</span>
+            </div>
+            <div class="payment-option" data-method="netbanking">
+              <i class="fas fa-university"></i>
+              <span>Net Banking</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="cardPayment" class="payment-form active">
+          <div class="form-group">
+            <label>Card Number</label>
+            <input type="text" placeholder="1234 5678 9012 3456" maxlength="19">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Expiry Date</label>
+              <input type="text" placeholder="MM/YY" maxlength="5">
+            </div>
+            <div class="form-group">
+              <label>CVV</label>
+              <input type="text" placeholder="123" maxlength="3">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Cardholder Name</label>
+            <input type="text" placeholder="Name on card">
+          </div>
+        </div>
+
+        <div id="upiPayment" class="payment-form">
+          <div class="form-group">
+            <label>UPI ID</label>
+            <input type="text" placeholder="yourname@paytm">
+          </div>
+        </div>
+
+        <div id="netbankingPayment" class="payment-form">
+          <div class="form-group">
+            <label>Select Bank</label>
+            <select>
+              <option>State Bank of India</option>
+              <option>HDFC Bank</option>
+              <option>ICICI Bank</option>
+              <option>Axis Bank</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="cta-btn full-width" onclick="processPayment()">
+          Pay <span id="finalPaymentAmount">₹0</span>
+        </button>
+      </div>
+      <div class="nav-actions">
+        <!-- ...existing nav buttons... -->
+        <a href="#profile" class="profile-icon" id="profile-btn" style="display: none;"><i
+            class="fas fa-user-circle"></i></a>
+        <a href="#login" class="nav-link" id="login-btn">Sign In</a>
+        <a href="#signup" class="nav-link" id="signup-btn">Sign Up</a>
+        <!-- USER DROPDOWN START -->
+        <div id="user-menu" style="display: none; position: relative;">
+          <button id="user-menu-btn" style="background:none;border:none;cursor:pointer;padding:0;">
+            <img id="user-menu-avatar" src="https://via.placeholder.com/32x32/3F51B5/fff?text=U"
+              style="width:32px;height:32px;border-radius:50%;vertical-align:middle;" alt="User">
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div id="user-menu-dropdown"
+            style="display:none; position:absolute; right:0; min-width:180px; background:#fff; border-radius:8px; box-shadow:0 6px 24px rgba(19,59,92,0.11); margin-top:10px; z-index:2000;">
+            <div style="padding:1rem 1.25rem; border-bottom:1px solid #eee;">
+              <div id="user-menu-name" style="font-weight:700; font-size:1rem;">User</div>
+              <div id="user-menu-email" style="font-size:.90rem; color:#888;">user@example.com</div>
+            </div>
+            <a href="#profile" style="display:block;padding:.7rem 1.25rem;text-decoration:none;color:#333;">My
+              Profile</a>
+            <button onclick="logout()"
+              style="width:100%;padding:.8rem 1.25rem;text-align:left;background:none;border:none;cursor:pointer;color:#dc2626;font-weight:600;">Logout</button>
+          </div>
+        </div>
+        <!-- USER DROPDOWN END -->
+        <button class="menu-trigger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+     
+
+    </section>
+  </main>
+
+  <script>
+
+    // Jharkhand Tourism Website - Complete Real Booking System
+document.addEventListener('DOMContentLoaded', () => {
+  // State management
+  let currentUser = null;
+  let isLoggedIn = false;
+  
+  let selectedHotel = null;
+  let bookingData = null;
+// --- User Menu (Logout Dropdown) --- //
+function updateUserMenu() {
+  const userMenu = document.getElementById('user-menu');
+  const avatar = document.getElementById('user-menu-avatar');
+  const name = document.getElementById('user-menu-name');
+  const email = document.getElementById('user-menu-email');
+  if (typeof currentUser === "object" && currentUser && isLoggedIn) {
+    userMenu.style.display = "inline-block";
+    avatar.src = currentUser.avatar || 'https://via.placeholder.com/32x32/3F51B5/fff?text=U';
+    name.textContent = (currentUser.firstName ? currentUser.firstName : "User") + (currentUser.lastName ? (" " + currentUser.lastName) : "");
+    email.textContent = currentUser.email;
+    if (loginBtn) loginBtn.style.display = "none";
+    if (signupBtn) signupBtn.style.display = "none";
+    if (profileBtn) profileBtn.style.display = "none";
+  } else {
+    userMenu.style.display = "none";
+    if (loginBtn) loginBtn.style.display = "inline-block";
+    if (signupBtn) signupBtn.style.display = "inline-block";
+  }
+}
+
+// Dropdown open/close logic
+document.getElementById('user-menu-btn').onclick = function(e) {
+  e.stopPropagation();
+  var dd = document.getElementById('user-menu-dropdown');
+  dd.style.display = (dd.style.display === "block") ? "none" : "block";
+};
+// Close dropdown on outside click
+document.addEventListener('click', function(event) {
+  var dropdown = document.getElementById('user-menu-dropdown');
+  var btn = document.getElementById('user-menu-btn');
+  if (dropdown && !dropdown.contains(event.target) && (!btn || !btn.contains(event.target)))
+    dropdown.style.display = "none";
+});
+
+// --- Logout function (Simple) ---
+function logout() {
+  if (!confirm('Are you sure you want to logout?')) return;
+  currentUser = null;
+  isLoggedIn = false;
+  localStorage.removeItem('jharkhandCurrentUser');
+  updateUserMenu();
+  if (document.getElementById('user-menu-dropdown'))
+    document.getElementById('user-menu-dropdown').style.display = "none";
+  // Reset profile display etc. as per your app logic
+  if (typeof showSection === "function") showSection('home');
+  showSuccessMessage && showSuccessMessage('Logged out successfully!');
+}
+
+  // Real hotel data
+  const hotelsData = {
+    ranchi: [
+      {
+        id: 'hotel_1',
+        name: 'Ranchi Grand Resort & Spa',
+        location: 'Ranchi',
+        price: 8500,
+        rating: 5,
+        image: 'https://via.placeholder.com/400x200/FF5722/fff?text=Grand+Resort',
+        amenities: ['WiFi', 'Pool', 'Spa', 'Restaurant', 'Parking'],
+        description: 'Luxury resort with world-class amenities and stunning views'
+      },
+      {
+        id: 'hotel_2', 
+        name: 'Hotel Capitol Hill',
+        location: 'Ranchi',
+        price: 4500,
+        rating: 4,
+        image: 'https://via.placeholder.com/400x200/2196F3/fff?text=Capitol+Hill',
+        amenities: ['WiFi', 'Restaurant', 'Parking', 'Gym'],
+        description: 'Modern business hotel in the heart of Ranchi'
+      }
+    ],
+    jamshedpur: [
+      {
+        id: 'hotel_3',
+        name: 'Jamshedpur Heritage Hotel',
+        location: 'Jamshedpur', 
+        price: 6200,
+        rating: 4,
+        image: 'https://via.placeholder.com/400x200/607D8B/fff?text=Heritage+Hotel',
+        amenities: ['WiFi', 'Restaurant', 'Parking', 'Conference'],
+        description: 'Heritage property showcasing local architecture'
+      }
+    ],
+    deoghar: [
+      {
+        id: 'hotel_4',
+        name: 'Deoghar Spiritual Retreat',
+        location: 'Deoghar',
+        price: 3800,
+        rating: 4,
+        image: 'https://via.placeholder.com/400x200/4CAF50/fff?text=Spiritual+Retreat',
+        amenities: ['WiFi', 'Restaurant', 'Temple View', 'Meditation'],
+        description: 'Peaceful retreat near Baidyanath Temple'
+      }
+    ],
+    netarhat: [
+      {
+        id: 'hotel_5',
+        name: 'Netarhat Hill Resort',
+        location: 'Netarhat',
+        price: 5500,
+        rating: 4,
+        image: 'https://via.placeholder.com/400x200/FF9800/fff?text=Hill+Resort',
+        amenities: ['WiFi', 'Restaurant', 'Mountain View', 'Bonfire'],
+        description: 'Hill station resort with panoramic views'
+      }
+    ],
+    dhanbad: [
+      {
+        id: 'hotel_6',
+        name: 'Dhanbad Business Hotel',
+        location: 'Dhanbad',
+        price: 4200,
+        rating: 3,
+        image: 'https://via.placeholder.com/400x200/9C27B0/fff?text=Business+Hotel',
+        amenities: ['WiFi', 'Restaurant', 'Parking', 'Business Center'],
+        description: 'Convenient business hotel with modern facilities'
+      }
+    ]
+  };
+
+  // Enhanced AI responses for Jharkhand Tourism
+  const aiResponses = {
+    hotels: {
+      ranchi: "For Ranchi, I recommend the **Ranchi Grand Resort & Spa** (₹8,500/night) for luxury stays, or **Hotel Capitol Hill** (₹4,500/night) for business travelers. Both offer excellent amenities and are centrally located.",
+      
+      jamshedpur: "In Jamshedpur, the **Heritage Hotel** (₹6,200/night) is perfect for experiencing local culture and architecture. It's located near major attractions and business centers.",
+      
+      deoghar: "For your spiritual journey in Deoghar, **Deoghar Spiritual Retreat** (₹3,800/night) offers peaceful accommodation near Baidyanath Temple with meditation facilities.",
+      
+      netarhat: "Experience the Queen of Chotanagpur at **Netarhat Hill Resort** (₹5,500/night). Perfect for nature lovers with stunning mountain views and bonfire facilities.",
+      
+      dhanbad: "For Dhanbad business trips, **Dhanbad Business Hotel** (₹4,200/night) provides modern facilities and convenient location for corporate travelers.",
+      
+      general: "Jharkhand offers diverse accommodation options from luxury resorts to spiritual retreats. Popular destinations include:\n\n🏨 **Ranchi** - Business & luxury hotels\n🏛️ **Jamshedpur** - Heritage properties\n🕉️ **Deoghar** - Spiritual retreats\n🏔️ **Netarhat** - Hill station resorts\n\nWould you like specific recommendations for any destination?"
+    },
+    
+    attractions: {
+      general: "Jharkhand's top attractions include:\n\n🏔️ **Netarhat** - Queen of Chotanagpur, sunset/sunrise views\n💧 **Hundru Falls** - 98m waterfall, 45km from Ranchi\n🐘 **Betla National Park** - Tigers, elephants, wildlife safari\n🕉️ **Baidyanath Temple, Deoghar** - One of 12 Jyotirlingas\n🌊 **Jonha Falls** - Beautiful waterfall near Ranchi\n🏛️ **Jagannath Temple, Ranchi** - Replica of Puri temple\n\nWhich destination interests you most?"
+    },
+    
+    weather: {
+      general: "Jharkhand has a pleasant climate:\n\n🌤️ **Best Time to Visit**: October to March (15-25°C)\n☀️ **Summer** (April-June): 25-40°C, hot but manageable\n🌧️ **Monsoon** (July-September): Heavy rainfall, lush greenery\n❄️ **Winter** (November-February): Cool and pleasant, perfect for sightseeing\n\n**Current season tips**: Carry light woolens for hill stations like Netarhat even in summer!"
+    },
+    
+    culture: {
+      general: "Jharkhand's rich tribal culture includes:\n\n🎭 **Chhau Dance** - UNESCO heritage masked dance\n🎵 **Traditional Music** - Mandolin, flute, drums\n🎨 **Crafts** - Bamboo work, pottery, metalwork\n🎊 **Festivals** - Sarhul, Karma Puja, Sohrai\n🏺 **Tribal Art** - Vibrant paintings and sculptures\n\nExperience authentic culture through village tours and craft workshops!"
+    },
+    
+    food: {
+      general: "Taste Jharkhand's authentic cuisine:\n\n🍚 **Dhuska** - Rice and lentil pancakes\n🥘 **Litti Chokha** - Stuffed wheat balls with mashed vegetables\n🐟 **Fish Curry** - Local river fish preparations\n🌿 **Tribal Dishes** - Organic, forest-based ingredients\n🥛 **Handia** - Traditional rice beer\n🍯 **Forest Honey** - Pure and natural\n\nTry local restaurants and tribal cuisine experiences!"
+    }
+  };
+
+  // Cloud storage simulation (in real app, use Firebase/AWS)
+  const cloudStorage = {
+    users: JSON.parse(localStorage.getItem('jharkhandUsers') || '[]'),
+    bookings: JSON.parse(localStorage.getItem('jharkhandBookings') || '[]'),
+    payments: JSON.parse(localStorage.getItem('jharkhandPayments') || '[]'),
+    
+    saveUser: function(user) {
+      const existingIndex = this.users.findIndex(u => u.email === user.email);
+      if (existingIndex !== -1) {
+        this.users[existingIndex] = user;
+      } else {
+        this.users.push(user);
+      }
+      localStorage.setItem('jharkhandUsers', JSON.stringify(this.users));
+    },
+    
+    getUser: function(email) {
+      return this.users.find(u => u.email === email);
+    },
+    
+    saveBooking: function(booking) {
+      this.bookings.push(booking);
+      localStorage.setItem('jharkhandBookings', JSON.stringify(this.bookings));
+    },
+    
+    getUserBookings: function(userId) {
+      return this.bookings.filter(b => b.userId === userId);
+    },
+    
+    savePayment: function(payment) {
+      this.payments.push(payment);
+      localStorage.setItem('jharkhandPayments', JSON.stringify(this.payments));
+    },
+    
+    getUserPayments: function(userId) {
+      return this.payments.filter(p => p.userId === userId);
+    }
+  };
+
+  // DOM Elements
+  const navLinks = document.querySelectorAll('.nav-link');
+  const pageSections = document.querySelectorAll('.page-section');
+  const hamburger = document.getElementById('hamburger');
+  const navMain = document.getElementById('nav-main');
+  
+  // Auth elements
+  const themeToggle = document.getElementById('theme-toggle');
+  const loginBtn = document.getElementById('login-btn');
+  const signupBtn = document.getElementById('signup-btn');
+  const profileBtn = document.getElementById('profile-btn');
+  const loginModal = document.getElementById('login');
+  const signupModal = document.getElementById('signup');
+  const loginForm = document.getElementById('loginForm');
+  const signupForm = document.getElementById('signupForm');
+  
+  // Hotel elements
+  const hotelDestination = document.getElementById('hotelDestination');
+  const searchCheckin = document.getElementById('searchCheckin');
+  const searchCheckout = document.getElementById('searchCheckout');
+  const hotelResults = document.getElementById('hotelResults');
+  const hotelsList = document.getElementById('hotelsList');
+  const bookingDetails = document.getElementById('bookingDetails');
+  
+  // Profile elements
+  const profileForm = document.getElementById('profileForm');
+  const avatarInput = document.getElementById('avatarInput');
+  const profileImage = document.getElementById('profileImage');
+  
+  // Chatbot elements
+  const chatInput = document.getElementById('chatInput');
+  const sendMessageBtn = document.getElementById('sendMessage');
+  const chatMessages = document.getElementById('chatMessages');
+  const clearChatBtn = document.getElementById('clearChat');
+
+  // Initialize app
+  init();
+
+  function init() {
+    setMinDates();
+    loadPopularHotels();
+    setupEventListeners();
+    handleURLChange();
+    
+    // Load saved theme
+    const savedTheme = localStorage.getItem('jharkhandTheme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+      themeToggle.textContent = '☀️';
+    }
+    
+    // Check if user is logged in
+    const savedUser = localStorage.getItem('jharkhandCurrentUser');
+    if (savedUser) {
+      currentUser = JSON.parse(savedUser);
+      isLoggedIn = true;
+      updateUIForLoggedInUser();
+    }
+  }
+
+  function setMinDates() {
+    const today = new Date().toISOString().split('T')[0];
+    if (searchCheckin) searchCheckin.min = today;
+    if (searchCheckout) searchCheckout.min = today;
+  }
+
+  function setupEventListeners() {
+    // Navigation
+    navLinks.forEach(link => {
+      link.addEventListener('click', handleNavClick);
+    });
+
+    // Mobile menu
+    if (hamburger) {
+      hamburger.addEventListener('click', () => {
+        navMain.classList.toggle('active');
+      });
+    }
+
+    // Theme toggle
+    if (themeToggle) {
+      themeToggle.addEventListener('click', toggleTheme);
+    }
+
+    // Auth buttons
+    if (loginBtn) {
+      loginBtn.addEventListener('click', () => showModal(loginModal));
+    }
+    if (signupBtn) {
+      signupBtn.addEventListener('click', () => showModal(signupModal));
+    }
+    if (profileBtn) {
+      profileBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        showSection('profile');
+      });
+    }
+
+    // Forms
+    if (loginForm) {
+      loginForm.addEventListener('submit', handleLogin);
+    }
+    if (signupForm) {
+      signupForm.addEventListener('submit', handleSignup);
+    }
+    if (profileForm) {
+      profileForm.addEventListener('submit', updateProfile);
+    }
+
+    // Avatar upload
+    if (avatarInput) {
+      avatarInput.addEventListener('change', handleAvatarUpload);
+    }
+
+    // Hotel search
+    if (searchCheckin) {
+      searchCheckin.addEventListener('change', updateCheckoutMinDate);
+    }
+
+    // Chatbot
+    if (sendMessageBtn) {
+      sendMessageBtn.addEventListener('click', sendChatMessage);
+    }
+    if (chatInput) {
+      chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendChatMessage();
+      });
+    }
+    if (clearChatBtn) {
+      clearChatBtn.addEventListener('click', clearChat);
+    }
+
+    // Modal close
+    document.querySelectorAll('.modal-close').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const modal = e.target.closest('.modal-page');
+        hideModal(modal);
+      });
+    });
+
+    // Payment method selection
+    document.querySelectorAll('.payment-option').forEach(option => {
+      option.addEventListener('click', selectPaymentMethod);
+    });
+
+    // URL changes
+    window.addEventListener('hashchange', handleURLChange);
+    window.addEventListener('popstate', handleURLChange);
+
+    // Profile tabs
+    document.querySelectorAll('.profile-tab').forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        const tabName = e.target.textContent.toLowerCase().replace(' ', '');
+        showProfileTab(tabName);
+      });
+    });
+
+    // Info tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const tabName = e.target.textContent.toLowerCase();
+        showInfoTab(tabName);
+      });
+    });
+  }
+
+  // Navigation Functions
+  function handleNavClick(e) {
+    e.preventDefault();
+    const targetId = e.target.getAttribute('href').substring(1);
+    
+    if (targetId === 'login') {
+      showModal(loginModal);
+      return;
+    }
+    if (targetId === 'signup') {
+      showModal(signupModal);
+      return;
+    }
+    if (targetId === 'profile' && !isLoggedIn) {
+      showModal(loginModal);
+      return;
+    }
+
+    showSection(targetId);
+    updateURL(targetId);
+    closeMobileMenu();
+  }
+
+  function showSection(sectionId) {
+    // Hide all sections
+    pageSections.forEach(section => {
+      section.classList.remove('active');
+      section.style.display = 'none';
+    });
+    
+    // Show target section
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection) {
+      targetSection.style.display = 'block';
+      setTimeout(() => targetSection.classList.add('active'), 10);
+    }
+    
+    // Update nav highlight
+    updateNavHighlight(sectionId);
+    
+    // Load section-specific data
+    if (sectionId === 'profile' && isLoggedIn) {
+      loadProfileData();
+    }
+  }
+
+  function updateNavHighlight(activeId) {
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      if (href && href.substring(1) === activeId) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  }
+
+  function handleURLChange() {
+    const hash = window.location.hash.substring(1) || 'home';
+    showSection(hash);
+  }
+
+  function updateURL(section) {
+    history.pushState(null, '', `#${section}`);
+  }
+
+  function closeMobileMenu() {
+    if (navMain) navMain.classList.remove('active');
+  }
+
+  // Modal functions
+  function showModal(modal) {
+    if (modal) {
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function hideModal(modal) {
+    if (modal) {
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  }
+
+  // Authentication
+  function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    
+    const user = cloudStorage.getUser(email);
+    
+    if (user && user.password === password) {
+      currentUser = user;
+      isLoggedIn = true;
+      localStorage.setItem('jharkhandCurrentUser', JSON.stringify(user));
+      updateUIForLoggedInUser();
+      hideModal(loginModal);
+      showSuccessMessage('Login successful!');
+      showSection('profile');
+    } else {
+      showErrorMessage('Invalid email or password.');
+    }
+  }
+
+  function handleSignup(e) {
+    e.preventDefault();
+    
+    const firstName = document.getElementById('signupFirstName').value;
+    const lastName = document.getElementById('signupLastName').value;
+    const email = document.getElementById('signupEmail').value;
+    const phone = document.getElementById('signupPhone').value;
+    const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    // Validation
+    if (password !== confirmPassword) {
+      showErrorMessage('Passwords do not match!');
+      return;
+    }
+    
+    if (cloudStorage.getUser(email)) {
+      showErrorMessage('Email already registered!');
+      return;
+    }
+    
+    // Create new user
+    const newUser = {
+      id: 'user_' + Date.now(),
+      firstName,
+      lastName,
+      email,
+      phone,
+      password,
+      address: '',
+      avatar: 'https://via.placeholder.com/150x150/3F51B5/fff?text=' + firstName.charAt(0) + lastName.charAt(0),
+      createdAt: new Date().toISOString(),
+      bookings: [],
+      payments: []
+    };
+    
+    cloudStorage.saveUser(newUser);
+    
+    currentUser = newUser;
+    isLoggedIn = true;
+    localStorage.setItem('jharkhandCurrentUser', JSON.stringify(newUser));
+    
+    updateUIForLoggedInUser();
+    hideModal(signupModal);
+    showSuccessMessage('Account created successfully!');
+    showSection('profile');
+  }
+
+  function updateUIForLoggedInUser() {
+    if (loginBtn) loginBtn.style.display = 'none';
+    if (signupBtn) signupBtn.style.display = 'none';
+    if (profileBtn) profileBtn.style.display = 'inline-block';
+    
+    // Update profile display
+    if (currentUser) {
+      updateProfileDisplay();
+    }
+  }
+
+  function updateProfileDisplay() {
+    const profileName = document.getElementById('profileName');
+    const profileEmail = document.getElementById('profileEmail');
+    const firstName = document.getElementById('firstName');
+    const lastName = document.getElementById('lastName');
+    const email = document.getElementById('email');
+    const phone = document.getElementById('phone');
+    const address = document.getElementById('address');
+    
+    if (profileName) profileName.textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+    if (profileEmail) profileEmail.textContent = currentUser.email;
+    if (profileImage) profileImage.src = currentUser.avatar;
+    
+    if (firstName) firstName.value = currentUser.firstName;
+    if (lastName) lastName.value = currentUser.lastName;
+    if (email) email.value = currentUser.email;
+    if (phone) phone.value = currentUser.phone;
+    if (address) address.value = currentUser.address;
+  }
+
+  function updateProfile(e) {
+    e.preventDefault();
+    if (!currentUser) return;
+    
+    currentUser.firstName = document.getElementById('firstName').value;
+    currentUser.lastName = document.getElementById('lastName').value;
+    currentUser.email = document.getElementById('email').value;
+    currentUser.phone = document.getElementById('phone').value;
+    currentUser.address = document.getElementById('address').value;
+    
+    cloudStorage.saveUser(currentUser);
+    localStorage.setItem('jharkhandCurrentUser', JSON.stringify(currentUser));
+    
+    updateProfileDisplay();
+    showSuccessMessage('Profile updated successfully!');
+  }
+
+  function handleAvatarUpload(e) {
+    const file = e.target.files[0];
+    if (file && currentUser) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        currentUser.avatar = e.target.result;
+        profileImage.src = e.target.result;
+        cloudStorage.saveUser(currentUser);
+        localStorage.setItem('jharkhandCurrentUser', JSON.stringify(currentUser));
+        showSuccessMessage('Avatar updated!');
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // Theme toggle
+  function toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    themeToggle.textContent = isDark ? '☀️' : '🌙';
+    localStorage.setItem('jharkhandTheme', isDark ? 'dark' : 'light');
+  }
+
+  // Hotel Functions
+  function loadPopularHotels() {
+    const popularHotelsContainer = document.getElementById('popularHotels');
+    if (!popularHotelsContainer) return;
+    
+    const allHotels = Object.values(hotelsData).flat();
+    const popularHotels = allHotels.slice(0, 6);
+    
+    const html = popularHotels.map(hotel => `
+      <div class="hotel-card" onclick="selectHotel('${hotel.id}')">
+        <img src="${hotel.image}" alt="${hotel.name}">
+        <div class="hotel-info-content">
+          <h3>${hotel.name}</h3>
+          <div class="rating">${'★'.repeat(hotel.rating)}${'☆'.repeat(5-hotel.rating)}</div>
+          <p>${hotel.description}</p>
+          <div class="price">₹${hotel.price.toLocaleString()} per night</div>
+        </div>
+      </div>
+    `).join('');
+    
+    popularHotelsContainer.innerHTML = html;
+  }
+
+  function updateCheckoutMinDate() {
+    if (searchCheckin && searchCheckout) {
+      const checkinDate = new Date(searchCheckin.value);
+      checkinDate.setDate(checkinDate.getDate() + 1);
+      searchCheckout.min = checkinDate.toISOString().split('T')[0];
+    }
+  }
+
+  // Global function for hotel search
+  window.searchHotels = function() {
+    const destination = hotelDestination.value;
+    const checkin = searchCheckin.value;
+    const checkout = searchCheckout.value;
+    const rooms = document.getElementById('searchRooms').value;
+    const guests = document.getElementById('searchGuests').value;
+    
+    if (!destination) {
+      showErrorMessage('Please select a destination');
+      return;
+    }
+    
+    if (!checkin || !checkout) {
+      showErrorMessage('Please select check-in and check-out dates');
+      return;
+    }
+    
+    const hotels = hotelsData[destination] || [];
+    
+    if (hotels.length === 0) {
+      hotelsList.innerHTML = '<p>No hotels found for selected destination.</p>';
+      hotelResults.style.display = 'block';
+      return;
+    }
+    
+    const html = hotels.map(hotel => `
+      <div class="hotel-card" onclick="selectHotel('${hotel.id}')">
+        <img src="${hotel.image}" alt="${hotel.name}">
+        <div class="hotel-info-content">
+          <h3>${hotel.name}</h3>
+          <div class="rating">${'★'.repeat(hotel.rating)}${'☆'.repeat(5-hotel.rating)}</div>
+          <p>${hotel.description}</p>
+          <p><strong>Amenities:</strong> ${hotel.amenities.join(', ')}</p>
+          <div class="price">₹${hotel.price.toLocaleString()} per night</div>
+          <button class="cta-btn" onclick="event.stopPropagation(); selectHotel('${hotel.id}')">Book Now</button>
+        </div>
+      </div>
+    `).join('');
+    
+    hotelsList.innerHTML = html;
+    hotelResults.style.display = 'block';
+    hotelResults.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Global function for hotel selection
+  window.selectHotel = function(hotelId) {
+    const allHotels = Object.values(hotelsData).flat();
+    const hotel = allHotels.find(h => h.id === hotelId);
+    
+    if (!hotel) return;
+    
+    selectedHotel = hotel;
+    
+    // Update booking details
+    document.getElementById('selectedHotelImage').src = hotel.image;
+    document.getElementById('selectedHotelName').textContent = hotel.name;
+    document.getElementById('selectedHotelRating').innerHTML = '★'.repeat(hotel.rating) + '☆'.repeat(5-hotel.rating);
+    document.getElementById('selectedHotelLocation').textContent = hotel.location;
+    document.getElementById('selectedHotelPrice').textContent = `₹${hotel.price.toLocaleString()} per night`;
+    
+    // Calculate costs
+    const checkin = searchCheckin.value;
+    const checkout = searchCheckout.value;
+    
+    if (checkin && checkout) {
+      const nights = Math.ceil((new Date(checkout) - new Date(checkin)) / (1000 * 60 * 60 * 24));
+      const roomCost = hotel.price * nights;
+      const taxes = Math.round(roomCost * 0.18); // 18% GST
+      const total = roomCost + taxes;
+      
+      document.getElementById('roomRate').textContent = `₹${hotel.price.toLocaleString()}`;
+      document.getElementById('nightsText').textContent = `${nights} Night${nights > 1 ? 's' : ''}`;
+      document.getElementById('totalRoomCost').textContent = `₹${roomCost.toLocaleString()}`;
+      document.getElementById('taxesAmount').textContent = `₹${taxes.toLocaleString()}`;
+      document.getElementById('finalAmount').textContent = `₹${total.toLocaleString()}`;
+      
+      bookingData = {
+        hotel,
+        checkin,
+        checkout,
+        nights,
+        roomCost,
+        taxes,
+        total
+      };
+    }
+    
+    bookingDetails.style.display = 'block';
+    showSection('hotel-booking');
+    bookingDetails.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Global function for payment
+  window.proceedToPayment = function() {
+    if (!isLoggedIn) {
+      showErrorMessage('Please login to continue with booking');
+      showModal(loginModal);
+      return;
+    }
+    
+    const firstName = document.getElementById('guestFirstName').value;
+    const lastName = document.getElementById('guestLastName').value;
+    const email = document.getElementById('guestEmail').value;
+    const phone = document.getElementById('guestPhone').value;
+    
+    if (!firstName || !lastName || !email || !phone) {
+      showErrorMessage('Please fill all required fields');
+      return;
+    }
+    
+    // Update payment modal
+    document.getElementById('paymentHotelName').textContent = selectedHotel.name;
+    document.getElementById('paymentHotelDates').textContent = `${bookingData.checkin} to ${bookingData.checkout} (${bookingData.nights} nights)`;
+    document.getElementById('paymentGuestInfo').textContent = `${firstName} ${lastName} - ${email}`;
+    document.getElementById('paymentTotalAmount').textContent = `₹${bookingData.total.toLocaleString()}`;
+    document.getElementById('finalPaymentAmount').textContent = `₹${bookingData.total.toLocaleString()}`;
+    
+    showModal(document.getElementById('paymentModal'));
+  };
+
+  function selectPaymentMethod(e) {
+    const option = e.currentTarget;
+    const method = option.dataset.method;
+    
+    // Update active state
+    document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('active'));
+    option.classList.add('active');
+    
+    // Show corresponding form
+    document.querySelectorAll('.payment-form').forEach(form => form.classList.remove('active'));
+    document.getElementById(method + 'Payment').classList.add('active');
+  }
+
+  // Global function for payment processing
+  window.processPayment = function() {
+    if (!bookingData || !selectedHotel || !currentUser) {
+      showErrorMessage('Payment information incomplete');
+      return;
+    }
+    
+    // Simulate payment processing
+    showSuccessMessage('Processing payment...');
+    
+    setTimeout(() => {
+      // Create booking record
+      const booking = {
+        id: 'booking_' + Date.now(),
+        userId: currentUser.id,
+        hotelId: selectedHotel.id,
+        hotelName: selectedHotel.name,
+        hotelImage: selectedHotel.image,
+        location: selectedHotel.location,
+        checkin: bookingData.checkin,
+        checkout: bookingData.checkout,
+        nights: bookingData.nights,
+        guests: document.getElementById('guestFirstName').value + ' ' + document.getElementById('guestLastName').value,
+        email: document.getElementById('guestEmail').value,
+        phone: document.getElementById('guestPhone').value,
+        specialRequests: document.getElementById('specialRequests').value,
+        roomCost: bookingData.roomCost,
+        taxes: bookingData.taxes,
+        totalAmount: bookingData.total,
+        status: 'confirmed',
+        bookingDate: new Date().toISOString(),
+        paymentMethod: document.querySelector('.payment-option.active').dataset.method
+      };
+      
+      // Create payment record
+      const payment = {
+        id: 'payment_' + Date.now(),
+        userId: currentUser.id,
+        bookingId: booking.id,
+        amount: bookingData.total,
+        method: booking.paymentMethod,
+        status: 'completed',
+        transactionId: 'TXN' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+        date: new Date().toISOString()
+      };
+      
+      // Save to cloud storage
+      cloudStorage.saveBooking(booking);
+      cloudStorage.savePayment(payment);
+      
+      // Save booking receipt for offline access
+      const receipt = generateBookingReceipt(booking, payment);
+      saveToDownloads('Booking Receipt - ' + selectedHotel.name, receipt, 'booking');
+      
+      hideModal(document.getElementById('paymentModal'));
+      showSuccessMessage('Payment successful! Booking confirmed.');
+      
+      // Show booking notification
+      showBookingNotification(selectedHotel.name);
+      
+      // Reset form
+      document.getElementById('guestForm').reset();
+      bookingDetails.style.display = 'none';
+      
+      // Go to profile to see booking
+      showSection('profile');
+      showProfileTab('bookings');
+      
+    }, 2000);
+  };
+
+  window.closePaymentModal = function() {
+    hideModal(document.getElementById('paymentModal'));
+  };
+
+  // Enhanced Chatbot with AI responses
+  function sendChatMessage() {
+    const message = chatInput.value.trim().toLowerCase();
+    if (!message) return;
+    
+    // Add user message
+    addChatMessage(chatInput.value, true);
+    chatInput.value = '';
+    
+    // Generate AI response
+    setTimeout(() => {
+      const response = generateAIResponse(message);
+      addChatMessage(response, false);
+    }, 800);
+  }
+
+  function generateAIResponse(message) {
+    // Hotel queries
+    if (message.includes('hotel') || message.includes('stay') || message.includes('accommodation')) {
+      if (message.includes('ranchi')) return aiResponses.hotels.ranchi;
+      if (message.includes('jamshedpur')) return aiResponses.hotels.jamshedpur;
+      if (message.includes('deoghar')) return aiResponses.hotels.deoghar;
+      if (message.includes('netarhat')) return aiResponses.hotels.netarhat;
+      if (message.includes('dhanbad')) return aiResponses.hotels.dhanbad;
+      return aiResponses.hotels.general;
+    }
+    
+    // Attraction queries
+    if (message.includes('place') || message.includes('visit') || message.includes('attraction') || message.includes('sightseeing')) {
+      return aiResponses.attractions.general;
+    }
+    
+    // Weather queries
+    if (message.includes('weather') || message.includes('climate') || message.includes('temperature')) {
+      return aiResponses.weather.general;
+    }
+    
+    // Culture queries
+    if (message.includes('culture') || message.includes('festival') || message.includes('dance') || message.includes('tradition')) {
+      return aiResponses.culture.general;
+    }
+    
+    // Food queries
+    if (message.includes('food') || message.includes('eat') || message.includes('restaurant') || message.includes('cuisine')) {
+      return aiResponses.food.general;
+    }
+    
+    // Greeting responses
+    if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
+      return "Hello! Welcome to Jharkhand Tourism. I'm here to help you plan your perfect trip. What would you like to know about Jharkhand?";
+    }
+    
+    // Default responses
+    const defaultResponses = [
+      "I'd be happy to help you with information about Jharkhand tourism! Could you be more specific about what you're looking for?",
+      "Jharkhand has so much to offer! Are you interested in hotels, attractions, culture, or something else?",
+      "Let me help you discover Jharkhand! What specific information do you need about places to visit, stay, or experience?"
+    ];
+    
+    return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+  }
+
+  // Global function for quick questions
+  window.askQuickQuestion = function(question) {
+    chatInput.value = question;
+    sendChatMessage();
+  };
+
+  function addChatMessage(message, isUser) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+    
+    const content = document.createElement('div');
+    content.className = 'message-content';
+    
+    if (message.includes('\n')) {
+      content.innerHTML = message.replace(/\n/g, '<br>');
+    } else {
+      content.innerHTML = message;
+    }
+    
+    messageDiv.appendChild(content);
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function clearChat() {
+    const initialMessage = chatMessages.querySelector('.bot-message');
+    chatMessages.innerHTML = '';
+    if (initialMessage) {
+      chatMessages.appendChild(initialMessage);
+    }
+  }
+
+  // Profile Tab Management
+  window.showProfileTab = function(tabName) {
+    // Update tab buttons
+    document.querySelectorAll('.profile-tab').forEach(tab => {
+      tab.classList.remove('active');
+      if (tab.textContent.toLowerCase().includes(tabName)) {
+        tab.classList.add('active');
+      }
+    });
+    
+    // Show corresponding content
+    document.querySelectorAll('.profile-content').forEach(content => {
+      content.classList.remove('active');
+    });
+    
+    const targetContent = document.getElementById(tabName);
+    if (targetContent) {
+      targetContent.classList.add('active');
+      
+      // Load data for specific tabs
+      if (tabName === 'bookings') {
+        loadUserBookings();
+      } else if (tabName === 'downloads') {
+        loadUserDownloads();
+      } else if (tabName === 'payments') {
+        loadUserPayments();
+      }
+    }
+  };
+
+  // Info Tab Management
+  window.showInfoTab = function(tabName) {
+    // Update tab buttons
+    document.querySelectorAll('.tab-btn').forEach(tab => {
+      tab.classList.remove('active');
+      if (tab.textContent.toLowerCase() === tabName) {
+        tab.classList.add('active');
+      }
+    });
+    
+    // Show corresponding content
+    document.querySelectorAll('.info-content').forEach(content => {
+      content.classList.remove('active');
+    });
+    
+    const targetContent = document.getElementById(tabName);
+    if (targetContent) {
+      targetContent.classList.add('active');
+    }
+  };
+
+  function loadProfileData() {
+    if (!currentUser) return;
+    
+    // Update stats
+    const userBookings = cloudStorage.getUserBookings(currentUser.id);
+    const userPayments = cloudStorage.getUserPayments(currentUser.id);
+    
+    document.getElementById('totalBookings').textContent = userBookings.length;
+    document.getElementById('totalTrips').textContent = userBookings.filter(b => b.status === 'completed').length;
+  }
+
+  function loadUserBookings() {
+    if (!currentUser) return;
+    
+    const userBookings = cloudStorage.getUserBookings(currentUser.id);
+    const bookingsContainer = document.getElementById('userBookings');
+    
+    if (userBookings.length === 0) {
+      bookingsContainer.innerHTML = `
+        <div class="no-bookings">
+          <i class="fas fa-calendar-alt"></i>
+          <p>No bookings found. Start booking hotels to see them here!</p>
+          <button class="cta-btn" onclick="location.hash='#hotels'">Book Hotels</button>
+        </div>
+      `;
+      return;
+    }
+    
+    const html = userBookings.map(booking => `
+      <div class="booking-item">
+        <div class="booking-header">
+          <h4>${booking.hotelName}</h4>
+          <span class="booking-status ${booking.status}">${booking.status.toUpperCase()}</span>
+        </div>
+        <div class="booking-details">
+          <p><strong>Location:</strong> ${booking.location}</p>
+          <p><strong>Dates:</strong> ${formatDate(booking.checkin)} to ${formatDate(booking.checkout)}</p>
+          <p><strong>Guests:</strong> ${booking.guests}</p>
+          <p><strong>Total:</strong> ₹${booking.totalAmount.toLocaleString()}</p>
+          <p><strong>Booking ID:</strong> ${booking.id}</p>
+        </div>
+        <div class="booking-actions">
+          <button class="cta-btn" onclick="downloadBookingReceipt('${booking.id}')">Download Receipt</button>
+        </div>
+      </div>
+    `).join('');
+    
+    bookingsContainer.innerHTML = html;
+  }
+
+  function loadUserPayments() {
+    if (!currentUser) return;
+    
+    const userPayments = cloudStorage.getUserPayments(currentUser.id);
+    const paymentsContainer = document.getElementById('paymentHistory');
+    
+    if (userPayments.length === 0) {
+      paymentsContainer.innerHTML = `
+        <div class="no-payments">
+          <i class="fas fa-credit-card"></i>
+          <p>No payment history found. Your completed transactions will appear here.</p>
+        </div>
+      `;
+      return;
+    }
+    
+    const html = userPayments.map(payment => `
+      <div class="payment-item">
+        <div class="payment-header">
+          <div>
+            <h4>Payment for Booking #${payment.bookingId}</h4>
+            <p class="payment-date">${formatDate(payment.date, true)}</p>
+          </div>
+          <div class="payment-amount">₹${payment.amount.toLocaleString()}</div>
+        </div>
+        <div class="payment-details">
+          <p><strong>Transaction ID:</strong> ${payment.transactionId}</p>
+          <p><strong>Method:</strong> ${payment.method.toUpperCase()}</p>
+          <p><strong>Status:</strong> ${payment.status.toUpperCase()}</p>
+        </div>
+      </div>
+    `).join('');
+    
+    paymentsContainer.innerHTML = html;
+  }
+
+  // Downloads Management
+  function saveToDownloads(title, data, type) {
+    const offlineData = JSON.parse(localStorage.getItem('jharkhandOfflineData') || '[]');
+    
+    const item = {
+      id: Date.now().toString(),
+      title,
+      data,
+      type,
+      savedAt: new Date().toISOString(),
+      userId: currentUser ? currentUser.id : null
+    };
+    
+    offlineData.push(item);
+    localStorage.setItem('jharkhandOfflineData', JSON.stringify(offlineData));
+  }
+
+  function loadUserDownloads() {
+    if (!currentUser) return;
+    
+    const allDownloads = JSON.parse(localStorage.getItem('jharkhandOfflineData') || '[]');
+    const userDownloads = allDownloads.filter(item => item.userId === currentUser.id);
+    
+    const downloadsContainer = document.getElementById('downloadsList');
+    const noDownloads = document.getElementById('noDownloads');
+    const totalDownloadsEl = document.getElementById('totalDownloads');
+    const totalSizeEl = document.getElementById('totalSize');
+    const exportAllBtn = document.getElementById('exportAll');
+    const clearAllBtn = document.getElementById('clearAllBtn');
+    
+    // Update stats
+    const totalSize = userDownloads.reduce((acc, item) => acc + getItemSize(item), 0);
+    totalDownloadsEl.textContent = userDownloads.length;
+    totalSizeEl.textContent = totalSize;
+    
+    if (userDownloads.length === 0) {
+      noDownloads.style.display = 'block';
+      downloadsContainer.innerHTML = '';
+      exportAllBtn.style.display = 'none';
+      clearAllBtn.style.display = 'none';
+      return;
+    }
+    
+    noDownloads.style.display = 'none';
+    exportAllBtn.style.display = 'inline-block';
+    clearAllBtn.style.display = 'inline-block';
+    
+    const html = userDownloads.map((item, index) => `
+      <div class="download-item" data-type="${item.type}">
+        <div class="download-info">
+          <h4>${item.title}</h4>
+          <p>${getItemTypeLabel(item.type)} • ${formatDate(item.savedAt, true)}</p>
+        </div>
+        <div class="download-actions">
+          <button class="download-btn" onclick="downloadUserItem('${item.id}')">
+            <i class="fas fa-download"></i> Download
+          </button>
+          <button class="view-btn" onclick="viewUserItem('${item.id}')">
+            <i class="fas fa-eye"></i> View
+          </button>
+          <button class="delete-btn" onclick="deleteUserItem('${item.id}')">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    `).join('');
+    
+    downloadsContainer.innerHTML = html;
+  }
+
+  // Global download functions
+  window.downloadUserItem = function(itemId) {
+    const allDownloads = JSON.parse(localStorage.getItem('jharkhandOfflineData') || '[]');
+    const item = allDownloads.find(d => d.id === itemId);
+    
+    if (!item) return;
+    
+    const blob = new Blob([item.data], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${item.title.replace(/\s+/g, '_')}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showSuccessMessage('Download started!');
+  };
+
+  window.viewUserItem = function(itemId) {
+    const allDownloads = JSON.parse(localStorage.getItem('jharkhandOfflineData') || '[]');
+    const item = allDownloads.find(d => d.id === itemId);
+    
+    if (!item) return;
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-page';
+    modal.style.display = 'flex';
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width: 600px; max-height: 80vh; overflow-y: auto;">
+        <button class="modal-close" onclick="this.closest('.modal-page').remove()">
+          <i class="fas fa-times"></i>
+        </button>
+        <h2>${item.title}</h2>
+        <div style="white-space: pre-wrap; line-height: 1.6; font-family: monospace; background: var(--light-gray); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+          ${item.data}
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+    
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal || e.target.classList.contains('modal-backdrop')) {
+        modal.remove();
+        document.body.style.overflow = '';
+      }
+    });
+  };
+
+  window.deleteUserItem = function(itemId) {
+    if (confirm('Are you sure you want to delete this item?')) {
+      let allDownloads = JSON.parse(localStorage.getItem('jharkhandOfflineData') || '[]');
+      allDownloads = allDownloads.filter(item => item.id !== itemId);
+      localStorage.setItem('jharkhandOfflineData', JSON.stringify(allDownloads));
+      loadUserDownloads();
+      showSuccessMessage('Item deleted successfully!');
+    }
+  };
+
+  window.exportAllData = function() {
+    if (!currentUser) return;
+    
+    const allDownloads = JSON.parse(localStorage.getItem('jharkhandOfflineData') || '[]');
+    const userDownloads = allDownloads.filter(item => item.userId === currentUser.id);
+    
+    if (userDownloads.length === 0) {
+      showErrorMessage('No data to export');
+      return;
+    }
+    
+    const exportData = {
+      user: {
+        name: currentUser.firstName + ' ' + currentUser.lastName,
+        email: currentUser.email,
+        exportDate: new Date().toISOString()
+      },
+      downloads: userDownloads,
+      bookings: cloudStorage.getUserBookings(currentUser.id),
+      payments: cloudStorage.getUserPayments(currentUser.id)
+    };
+    
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Jharkhand_Tourism_Data_${currentUser.firstName}_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showSuccessMessage('All data exported successfully!');
+  };
+
+  window.clearAllDownloads = function() {
+    if (!currentUser) return;
+    
+    if (confirm('Are you sure you want to clear all your downloads? This cannot be undone.')) {
+      let allDownloads = JSON.parse(localStorage.getItem('jharkhandOfflineData') || '[]');
+      allDownloads = allDownloads.filter(item => item.userId !== currentUser.id);
+      localStorage.setItem('jharkhandOfflineData', JSON.stringify(allDownloads));
+      loadUserDownloads();
+      showSuccessMessage('All downloads cleared!');
+    }
+  };
+
+  window.downloadBookingReceipt = function(bookingId) {
+    const userBookings = cloudStorage.getUserBookings(currentUser.id);
+    const booking = userBookings.find(b => b.id === bookingId);
+    
+    if (!booking) return;
+    
+    const userPayments = cloudStorage.getUserPayments(currentUser.id);
+    const payment = userPayments.find(p => p.bookingId === bookingId);
+    
+    const receipt = generateBookingReceipt(booking, payment);
+    
+    const blob = new Blob([receipt], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Booking_Receipt_${booking.id}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showSuccessMessage('Receipt downloaded!');
+  };
+
+  // Utility Functions
+  function generateBookingReceipt(booking, payment) {
+    return `
+JHARKHAND TOURISM - BOOKING RECEIPT
+=====================================
+
+BOOKING CONFIRMATION
+---------------------
+Booking ID: ${booking.id}
+Booking Date: ${formatDate(booking.bookingDate, true)}
+Status: ${booking.status.toUpperCase()}
+
+HOTEL DETAILS
+--------------
+Hotel: ${booking.hotelName}
+Location: ${booking.location}
+Check-in: ${formatDate(booking.checkin)} (2:00 PM)
+Check-out: ${formatDate(booking.checkout)} (12:00 PM)
+Number of Nights: ${booking.nights}
+
+GUEST INFORMATION
+------------------
+Guest Name: ${booking.guests}
+Email: ${booking.email}
+Phone: ${booking.phone}
+Special Requests: ${booking.specialRequests || 'None'}
+
+PAYMENT DETAILS
+----------------
+Room Charges: ₹${booking.roomCost.toLocaleString()}
+Taxes & Fees: ₹${booking.taxes.toLocaleString()}
+Total Amount: ₹${booking.totalAmount.toLocaleString()}
+
+${payment ? `
+TRANSACTION DETAILS
+--------------------
+Transaction ID: ${payment.transactionId}
+Payment Method: ${payment.method.toUpperCase()}
+Payment Status: ${payment.status.toUpperCase()}
+Payment Date: ${formatDate(payment.date, true)}
+` : ''}
+
+IMPORTANT INFORMATION
+----------------------
+• Please carry a valid government ID for check-in
+• Cancellation allowed up to 24 hours before check-in
+• Complimentary breakfast included
+• Free WiFi available
+• Contact hotel directly for any changes
+
+CONTACT INFORMATION
+-------------------
+Jharkhand Tourism Support: +91-123-456-7890
+Email: support@jharkhandtourism.com
+Website: www.jharkhandtourism.com
+
+Thank you for choosing Jharkhand Tourism!
+Safe travels!
+
+Generated on: ${formatDate(new Date(), true)}
+    `.trim();
+  }
+
+  function getItemTypeLabel(type) {
+    const labels = {
+      'booking': 'Hotel Booking',
+      'receipt': 'Payment Receipt',
+      'itinerary': 'Travel Itinerary',
+      'trip': 'Trip Plan'
+    };
+    return labels[type] || 'Document';
+  }
+
+  function getItemSize(item) {
+    return Math.ceil(new Blob([JSON.stringify(item)]).size / 1024);
+  }
+
+  function formatDate(dateString, includeTime = false) {
+    const date = new Date(dateString);
+    const options = { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    };
+    if (includeTime) {
+      options.hour = '2-digit';
+      options.minute = '2-digit';
+    }
+    return date.toLocaleDateString('en-IN', options);
+  }
+
+  function showSuccessMessage(message) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message-success';
+    messageDiv.textContent = message;
+    document.body.appendChild(messageDiv);
+    setTimeout(() => messageDiv.remove(), 3000);
+  }
+
+  function showErrorMessage(message) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message-error';
+    messageDiv.textContent = message;
+    document.body.appendChild(messageDiv);
+    setTimeout(() => messageDiv.remove(), 4000);
+  }
+
+  // Logout function
+  window.logout = function() {
+    if (confirm('Are you sure you want to logout?')) {
+      currentUser = null;
+      isLoggedIn = false;
+      selectedHotel = null;
+      bookingData = null;
+      
+      localStorage.removeItem('jharkhandCurrentUser');
+      
+      if (loginBtn) loginBtn.style.display = 'inline-block';
+      if (signupBtn) signupBtn.style.display = 'inline-block';
+      if (profileBtn) profileBtn.style.display = 'none';
+      
+      showSection('home');
+      showSuccessMessage('Logged out successfully!');
+    }
+  };
+
+  // Service Worker Registration for Offline Support
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then((registration) => {
+          console.log('SW registered: ', registration);
+        })
+        .catch((registrationError) => {
+          console.log('SW registration failed: ', registrationError);
+        });
+    });
+  }
+
+  // Network Status Monitoring
+  function updateNetworkStatus() {
+    const isOnline = navigator.onLine;
+    
+    // Update UI based on network status
+    if (isOnline) {
+      document.body.classList.remove('offline-mode');
+      showSuccessMessage('You are back online!');
+    } else {
+      document.body.classList.add('offline-mode');
+      showErrorMessage('You are offline. Some features may be limited.');
+    }
+  }
+
+  window.addEventListener('online', updateNetworkStatus);
+  window.addEventListener('offline', updateNetworkStatus);
+
+  // Auto-save user data periodically
+  setInterval(() => {
+    if (currentUser && isLoggedIn) {
+      localStorage.setItem('jharkhandCurrentUser', JSON.stringify(currentUser));
+    }
+  }, 30000); // Save every 30 seconds
+
+  // Initialize notification system
+  function requestNotificationPermission() {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+          showSuccessMessage('Notifications enabled for booking updates!');
+        }
+      });
+    }
+  }
+
+  // Show notification for successful bookings
+  function showBookingNotification(hotelName) {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification('Booking Confirmed!', {
+        body: `Your booking at ${hotelName} has been confirmed.`,
+        icon: '/favicon.ico',
+        tag: 'booking-confirmation'
+      });
+    }
+  }
+
+  // Search functionality
+  function initializeSearch() {
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.placeholder = 'Search hotels, destinations...';
+    searchInput.className = 'global-search';
+    
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      if (query.length > 2) {
+        performGlobalSearch(query);
+      }
+    });
+  }
+
+  function performGlobalSearch(query) {
+    const allHotels = Object.values(hotelsData).flat();
+    const results = allHotels.filter(hotel => 
+      hotel.name.toLowerCase().includes(query) ||
+      hotel.location.toLowerCase().includes(query) ||
+      hotel.description.toLowerCase().includes(query)
+    );
+    
+    // Display search results
+    if (results.length > 0) {
+      console.log('Search results:', results);
+    }
+  }
+
+  // Error handling for the entire application
+  window.addEventListener('error', (e) => {
+    console.error('Application error:', e.error);
+    showErrorMessage('An unexpected error occurred. Please refresh the page.');
+  });
+
+  // Unhandled promise rejection handling
+  window.addEventListener('unhandledrejection', (e) => {
+    console.error('Unhandled promise rejection:', e.reason);
+    showErrorMessage('A network error occurred. Please check your connection.');
+  });
+
+  // Performance monitoring
+  function logPerformance() {
+    if ('performance' in window) {
+      const navigation = performance.getEntriesByType('navigation')[0];
+      console.log('Page load time:', navigation.loadEventEnd - navigation.loadEventStart, 'ms');
+    }
+  }
+
+  // Initialize performance logging
+  setTimeout(logPerformance, 1000);
+
+  // Cleanup function for memory management
+  function cleanup() {
+    document.removeEventListener('click', handleGlobalClick);
+    window.removeEventListener('resize', handleResize);
+    
+    if (window.autoSaveInterval) {
+      clearInterval(window.autoSaveInterval);
+    }
+  }
+
+  // Handle page unload
+  window.addEventListener('beforeunload', (e) => {
+    if (currentUser && isLoggedIn) {
+      localStorage.setItem('jharkhandCurrentUser', JSON.stringify(currentUser));
+    }
+  });
+
+  // Global click handler for analytics
+  function handleGlobalClick(e) {
+    const target = e.target;
+    
+    // Track button clicks
+    if (target.matches('button, .cta-btn')) {
+      console.log('Button clicked:', target.textContent);
+    }
+    
+    // Track hotel selections
+    if (target.closest('.hotel-card')) {
+      console.log('Hotel viewed:', target.closest('.hotel-card').querySelector('h3')?.textContent);
+    }
+  }
+
+  document.addEventListener('click', handleGlobalClick);
+
+  // Responsive handler
+  function handleResize() {
+    if (window.innerWidth < 768) {
+      document.body.classList.add('mobile-view');
+    } else {
+      document.body.classList.remove('mobile-view');
+    }
+  }
+
+  window.addEventListener('resize', handleResize);
+  handleResize(); // Initial call
+
+  // Initialize all components
+  requestNotificationPermission();
+  initializeSearch();
+
+  console.log('Jharkhand Tourism - Complete Real Booking System Loaded! 🌟');
+  console.log('Features: Real hotel booking, AI chatbot, offline support, payment processing, user management');
+
+});
+
+  </script>
+</body>
+
+</html>
